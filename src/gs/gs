@@ -1,0 +1,41 @@
+'set display color white'
+'set rgb 99 255 255 255'
+'c'
+
+'open <CTL>'
+
+'set mpdset hires brmap'
+
+'set grads off'
+'set grid off'
+'set mpdraw on'
+
+'set gxout grfill'
+'d <VAR>' 
+'cbarn' 
+
+'draw title <TITULO>'
+'printim <NOME_FIG>.png'
+'quit'
+
+function rgb(NCOR)
+  steps=NCOR*2+1
+  i=0
+  '!rm -f .pipe'
+  while(i<steps)
+    '!palheta 'i/(steps-1)' rainbow >> .pipe'
+    i=i+1
+  endwhile
+  i=0
+  while(i<steps)
+    rc=read('.pipe')
+    res=sublin(rc,2)
+    r=subwrd(res,3)
+    g=subwrd(res,6)
+    b=subwrd(res,9)
+    'set rgb 'i+16' 'r' 'g' 'b
+    i=i+1
+  endwhile
+  rc=close('.pipe')
+  '!rm -f .pipe'
+return
