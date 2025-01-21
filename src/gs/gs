@@ -14,7 +14,7 @@
 'd <VAR>' 
 'cbarn' 
 
-'draw title <TITULO>'
+'draw title <TITULO> | SPI<SPI> | <PERCENTAGE>% | <CUTLINE>'
 'printim <NOME_FIG>.png'
 'quit'
 

@@ -43,10 +43,12 @@ if [ "$#" -ge 4 ]; then
 fi
 
 # Cria diretórios para duracao_maxima e duracao_media
-BASE_OUTPUT_DIR="output"
+BASE_OUTPUT_DIR="output/duracao"
 MAX_OUTPUT_DIR="$BASE_OUTPUT_DIR/max"
 MEDIA_OUTPUT_DIR="$BASE_OUTPUT_DIR/med"
-mkdir -p "$MAX_OUTPUT_DIR" "$MEDIA_OUTPUT_DIR"
+MAX_FIG_OUTPUT_DIR="$MAX_OUTPUT_DIR/figures"
+MEDIA_FIG_OUTPUT_DIR="$MEDIA_OUTPUT_DIR/figures"
+mkdir -p "$MAX_OUTPUT_DIR" "$MEDIA_OUTPUT_DIR" "$MAX_FIG_OUTPUT_DIR" "$MEDIA_FIG_OUTPUT_DIR"
 
 # Verifica se é arquivo único ou vários arquivos .ctl
 if [ -f "$INPUT_PATH" ] && [[ "$INPUT_PATH" == *.ctl ]]; then
@@ -105,10 +107,15 @@ for CTL_FILE in "${CTL_FILES[@]}"; do
             TMP_GS=$(mktemp)
             trap 'rm -f "$TMP_GS"' EXIT
 
+            SPI=$(echo $CTL_FILE | grep -oP '(?<=spi)[0-9]+')
+
             sed -e "s|<CTL>|$ARQ_CTL_OUT|g" \
                 -e "s|<VAR>|SPI|g" \
-                -e "s|<TITULO>|Duracao Max - $CUT_LINE - $PERCENTAGE%|g" \
-                -e "s|<NOME_FIG>|${ARQ_BIN_OUT}|g" \
+                -e "s|<TITULO>|Dur Max|g" \
+                -e "s|<SPI>|$SPI|g" \
+                -e "s|<PERCENTAGE>|$PERCENTAGE|g" \
+                -e "s|<CUTLINE>|$CUT_LINE|g" \
+                -e "s|<NOME_FIG>|${ARQ_BIN_OUT}_perc${PERCENTAGE}_cut_${CUT_LINE/./_}_spi${SPI}|g" \
                 "$SCRIPT_DIR/src/gs/gs" > "$TMP_GS"
 
             # echo -e "${BLUE}[PLOT]${NC} Plot for max"
@@ -116,6 +123,10 @@ for CTL_FILE in "${CTL_FILES[@]}"; do
                 echo -e "${RED}Erro ao gerar gráficos.${NC}"
                 exit 1
             fi
+
+            # copy figures to output directory
+            mkdir -p "$MAX_FIG_OUTPUT_DIR/$PERCENTAGE/$CUT_LINE"
+            cp ${ARQ_BIN_OUT}_perc${PERCENTAGE}_cut_${CUT_LINE/./_}_spi${SPI}.png $MAX_FIG_OUTPUT_DIR/$PERCENTAGE/$CUT_LINE
 
             # Process duracao_media
             CUT_DIR_MEDIA="$FILE_MEDIA_OUTPUT_DIR/${PERCENTAGE}/cut_${CUT_LINE/./_}"
@@ -146,8 +157,11 @@ for CTL_FILE in "${CTL_FILES[@]}"; do
 
             sed -e "s|<CTL>|$ARQ_CTL_OUT_MEDIA|g" \
                 -e "s|<VAR>|SPI|g" \
-                -e "s|<TITULO>|Duracao Med - $CUT_LINE - $PERCENTAGE%|g" \
-                -e "s|<NOME_FIG>|${ARQ_BIN_OUT_MEDIA}|g" \
+                -e "s|<TITULO>|Dur Med|g" \
+                -e "s|<SPI>|$SPI|g" \
+                -e "s|<PERCENTAGE>|$PERCENTAGE|g" \
+                -e "s|<CUTLINE>|$CUT_LINE|g" \
+                -e "s|<NOME_FIG>|${ARQ_BIN_OUT_MEDIA}_perc${PERCENTAGE}_cut_${CUT_LINE/./_}_spi${SPI}|g" \
                 "$SCRIPT_DIR/src/gs/gs" > "$TMP_GS_MEDIA"
 
             #echo -e "${BLUE}[PLOT]${NC} Plot for media"
@@ -155,6 +169,10 @@ for CTL_FILE in "${CTL_FILES[@]}"; do
                 echo -e "${RED}Erro ao gerar gráficos.${NC}"
                 exit 1
             fi
+
+            # copy figures to output directory
+            mkdir -p "$MEDIA_FIG_OUTPUT_DIR/$PERCENTAGE/$CUT_LINE"
+            cp ${ARQ_BIN_OUT_MEDIA}_perc${PERCENTAGE}_cut_${CUT_LINE/./_}_spi${SPI}.png $MEDIA_FIG_OUTPUT_DIR/$PERCENTAGE/$CUT_LINE
 
             echo -e "${GRAY}─────────────────────────────────────────${NC}"
         done
