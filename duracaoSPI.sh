@@ -21,7 +21,7 @@ fi
 
 # Define arrays de estações, percentuais e linhas de corte
 # SEASONS=("DJF" "MAM" "JJA" "SON" "ANO")
-PERCENTAGES=(70 80)
+PERCENTAGES=(80)
 CUT_LINES=(-2.0 -1.5 1.0 2.0)
 
 # Ajuste dos parâmetros de entrada para permitir diretório ou arquivo
@@ -43,7 +43,7 @@ if [ "$#" -ge 4 ]; then
 fi
 
 # Cria diretórios para duracao_maxima e duracao_media
-BASE_OUTPUT_DIR="output/duracao"
+BASE_OUTPUT_DIR="output/duracao/$INPUT_PATH"
 MAX_OUTPUT_DIR="$BASE_OUTPUT_DIR/max"
 MEDIA_OUTPUT_DIR="$BASE_OUTPUT_DIR/med"
 MAX_FIG_OUTPUT_DIR="$MAX_OUTPUT_DIR/figures"
