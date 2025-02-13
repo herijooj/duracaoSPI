@@ -43,9 +43,9 @@ if [ "$#" -ge 4 ]; then
 fi
 
 # Cria diretórios para duracao_maxima e duracao_media
-BASE_OUTPUT_DIR="output/duracao/$INPUT_PATH"
-MAX_OUTPUT_DIR="$BASE_OUTPUT_DIR/max"
-MEDIA_OUTPUT_DIR="$BASE_OUTPUT_DIR/med"
+BASE_OUTPUT_DIR="output/duracao"
+MAX_OUTPUT_DIR="$BASE_OUTPUT_DIR/max/${INPUT_PATH}"
+MEDIA_OUTPUT_DIR="$BASE_OUTPUT_DIR/med/${INPUT_PATH}"
 MAX_FIG_OUTPUT_DIR="$MAX_OUTPUT_DIR/figures"
 MEDIA_FIG_OUTPUT_DIR="$MEDIA_OUTPUT_DIR/figures"
 mkdir -p "$MAX_OUTPUT_DIR" "$MEDIA_OUTPUT_DIR" "$MAX_FIG_OUTPUT_DIR" "$MEDIA_FIG_OUTPUT_DIR"
@@ -108,13 +108,16 @@ for CTL_FILE in "${CTL_FILES[@]}"; do
             trap 'rm -f "$TMP_GS"' EXIT
 
             SPI=$(echo $CTL_FILE | grep -oP '(?<=spi)[0-9]+')
+            VAR="spi${SPI}"
+            BOTTOM=$(basename $CTL_FILE)
 
             sed -e "s|<CTL>|$ARQ_CTL_OUT|g" \
-                -e "s|<VAR>|SPI|g" \
+                -e "s|<VAR>|$VAR|g" \
                 -e "s|<TITULO>|Dur Max|g" \
                 -e "s|<SPI>|$SPI|g" \
                 -e "s|<PERCENTAGE>|$PERCENTAGE|g" \
                 -e "s|<CUTLINE>|$CUT_LINE|g" \
+                -e "s|<BOTTOM>|$BOTTOM|g" \
                 -e "s|<NOME_FIG>|${ARQ_BIN_OUT}_perc${PERCENTAGE}_cut_${CUT_LINE/./_}_spi${SPI}|g" \
                 "$SCRIPT_DIR/src/gs/gs" > "$TMP_GS"
 
@@ -156,11 +159,12 @@ for CTL_FILE in "${CTL_FILES[@]}"; do
             trap 'rm -f "$TMP_GS_MEDIA"' EXIT
 
             sed -e "s|<CTL>|$ARQ_CTL_OUT_MEDIA|g" \
-                -e "s|<VAR>|SPI|g" \
+                -e "s|<VAR>|$VAR|g" \
                 -e "s|<TITULO>|Dur Med|g" \
                 -e "s|<SPI>|$SPI|g" \
                 -e "s|<PERCENTAGE>|$PERCENTAGE|g" \
                 -e "s|<CUTLINE>|$CUT_LINE|g" \
+                -e "s|<BOTTOM>|$BOTTOM|g" \
                 -e "s|<NOME_FIG>|${ARQ_BIN_OUT_MEDIA}_perc${PERCENTAGE}_cut_${CUT_LINE/./_}_spi${SPI}|g" \
                 "$SCRIPT_DIR/src/gs/gs" > "$TMP_GS_MEDIA"
 

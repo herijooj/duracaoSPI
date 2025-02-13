@@ -15,6 +15,10 @@
 'cbarn' 
 
 'draw title <TITULO> | SPI<SPI> | <PERCENTAGE>% | <CUTLINE>'
+
+'set string 1 l 5'
+'draw string '0.5' '0.2' <BOTTOM>' 
+
 'printim <NOME_FIG>.png'
 'quit'
 
