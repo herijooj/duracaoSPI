@@ -30,7 +30,7 @@
 'd <VAR>'
 
 'cbarn * 1.2'   
-'draw title <TITULO> | SPI<SPI> | <PERCENTAGE>% | <CUTLINE>'
+'draw title <TITLE>'
 
 'set string 1 c 5'
 'draw string '4.0' '0.2' <BOTTOM>' 
